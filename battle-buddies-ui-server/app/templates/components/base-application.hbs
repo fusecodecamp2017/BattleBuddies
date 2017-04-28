@@ -1,0 +1,69 @@
+<div class="row header-nav">
+  <div class="row grow centered title">
+    <span>{{applicationTitle}}</span>
+  </div>
+
+  <div class="sub-title">
+    {{subTitle}}
+  </div>
+</div>
+
+<div class="row grow centered">
+    {{#if isLoading}}
+        <div class="loader"></div>
+    {{else if isNotStarted}}
+        <div>The game is currently not started.</div>
+    {{else if isError}}
+        <div class="column">
+          <div>Error Message: {{errorMessage}}</div>
+        </div>
+    {{else if isStarted}}
+        {{#each grid as |column|}}
+            <div class="column">
+              {{#each column as |player|}}
+                  <div class="game-square centered" style={{blockCSS}}>
+                    {{#if player.name}}
+
+                        {{#if (eq player.hp 0)}}
+                            <div class="dead">{{player.name}}</div>
+                        {{else}}
+                            <div class="player column grow">
+
+                                {{#if (not-eq (player-action player) "")}}
+                                  <div class="player-move talk-bubble round btm-left">
+                                      <div class="talktext">
+                                          <p>{{player-action player}}</p>
+                                      </div>
+                                  </div>
+                                {{/if}}
+
+                                <div class="player-details column grow centered">
+                                  <div class="name">{{player.name}}</div>
+
+                                  <div class="stats row space-around">
+                                      <div class="column stat hp"><img src="/assets/images/health.png"/><div>{{player.hp}}</div></div>
+                                      <div class="column stat defence"><img src="/assets/images/armor.png"/><div>{{player.defence}}</div></div>
+                                      <div class="column stat damage"><img src="/assets/images/damage.png"/><div>{{player.dmg}}</div></div>
+                                  </div>
+                                </div>
+                            </div>
+                        {{/if}}
+
+                    {{/if}}
+                  </div>
+              {{/each}}
+            </div>
+        {{/each}}
+
+    {{else}}
+      <div>Unknown Status</div>
+    {{/if}}
+</div>
+
+<div class="row space-around width-100">
+  <span>Requests: {{requestCount}}</span>
+  <span>Alive: {{playerCount}}</span>
+  <span>Deceased: {{deceasedCount}}</span>
+  <span>Status: {{gameStatusDisplay}}</span>
+</div>
+

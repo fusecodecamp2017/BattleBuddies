@@ -1,0 +1,163 @@
+html, body{
+  margin: 0;
+  padding: 0;
+
+  font-family: "Courier New", Courier, monospace;
+}
+
+.application{
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-direction: column;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.width- {
+  &100 {
+    width: 100%;
+  }
+}
+
+.centered {
+  display: flex;
+
+  height: 100%;
+
+  justify-content: center;
+  align-items: center;
+}
+
+.centered-vertical {
+  display: flex;
+  align-items: center;
+}
+
+.space-around {
+  justify-content: space-around;
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+.game-square {
+  background: url("/assets/images/game-square.jpg");
+  border: thin solid white;
+  align-items: flex-end;
+}
+
+.talk-bubble {
+  display: inline-block;
+  position: relative;
+  width: 120px;
+  height: auto;
+  background-color: lightyellow;
+}
+
+.round{
+  border-radius: 30px;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+}
+
+.talktext{
+  color: black;
+  padding: 1em;
+  text-align: left;
+  line-height: 1.5em;
+}
+.talktext p{
+  /* remove webkit p margins */
+  -webkit-margin-before: 0em;
+  -webkit-margin-after: 0em;
+}
+
+.player {
+  font-size: 12px;
+
+  .player-move {
+    color: black;
+  }
+
+  .player-details {
+    color: white;
+
+    .name {
+      align-self: center;
+      font-size: 18px;
+
+      padding-bottom: 6px;
+    }
+
+    .stats {
+      width: 100%;
+
+      .stat {
+        align-items: center;
+      }
+
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+}
+
+.dead {
+  color: white;
+  background-color: gray;
+
+  padding: 20px 10px;
+  border-radius: 40px 40px 0px 0px;
+}
+
+.header-nav {
+  height: 4vh;
+
+  width: 100%;
+
+  .title {
+    font-size: x-large;
+    font-weight: bolder;
+  }
+
+  .sub-title {
+    position: fixed;
+    right: 10px;
+
+    font-size: smaller;
+    font-weight: lighter;
+  }
+}
+
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

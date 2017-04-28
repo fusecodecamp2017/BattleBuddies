@@ -1,0 +1,17 @@
+{
+  "name": "battle-buddies",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "request": "^2.81.0",
+    "request-promise-native": "^1.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "gleichsnerd",
+  "license": "ISC"
+}
