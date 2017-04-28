@@ -11,6 +11,7 @@ class App < Sinatra::Application
 
   configure do
     set :show_exceptions, true
+    set :bind, '0.0.0.0'
     enable :dump_errors,:raise_errors
     use Rack::ShowExceptions
   end

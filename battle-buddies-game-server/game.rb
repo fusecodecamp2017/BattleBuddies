@@ -1,3 +1,4 @@
+require 'thread'
 require './bb_object'
 require './board'
 require './player'
@@ -8,6 +9,8 @@ class Game < BBObject
 
   def initialize(width, height, number_of_players)
     super(:game)
+    @turn_mutex = Mutex.new
+    @board_mutex = Mutex.new
     @board = Board.new(width, height, number_of_players)
     @players = Hash.new()
   end
@@ -15,6 +18,8 @@ class Game < BBObject
   def add_player(player)
     # if(@players.length < @board.number_of_players)
       @players[player.id] = player
+      alive_players = @players.select { |k, player| !player.is_dead? }.map { |k, player| player }
+      @board.players = alive_players
       @board.put_in_starting_position(player)
     # else
       # false
@@ -23,7 +28,7 @@ class Game < BBObject
 
   def display(options = {})
     if options.size == 0
-      to_h
+      to_h_public
     else
       h = to_h
       player_id = options[:player_id]
@@ -36,21 +41,27 @@ class Game < BBObject
   end
 
   def parse_turns(turns)
-    turns.each do |turn|
-      if !turn.player.is_dead?
-        case turn.p_action
-          when :move
-            # "Player is moving"
-            player_move(turn)
-          when :attack
-            # "Player is attacking"
-            player_attack(turn)
-          when :defend
-            # "Player is defending"
-            player_defend(turn)
-          else
-            # Do nothing
-            player_wait(turn.player)
+    @turn_mutex.synchronize do 
+
+      alive_players = @players.select { |k, player| !player.is_dead? }.map { |k, player| player }
+      @board.players = alive_players
+
+      turns.each do |turn|
+        if !turn.player.is_dead?
+          case turn.p_action
+            when :move
+              # "Player is moving"
+              player_move(turn)
+            when :attack
+              # "Player is attacking"
+              player_attack(turn)
+            when :defend
+              # "Player is defending"
+              player_defend(turn)
+            else
+              # Do nothing
+              player_wait(turn.player)
+          end
         end
       end
     end
@@ -58,8 +69,10 @@ class Game < BBObject
 
 
   def player_move(turn)
-    event = @board.move(turn.player, turn.direction)
-    turn.add_event(event)
+    @board_mutex.synchronize do 
+      event = @board.move(turn.player, turn.direction)
+      turn.add_event(event)
+    end
   end
 
   def player_attack(turn)
@@ -99,12 +112,14 @@ class Game < BBObject
   end
 
   def cleanup
-    @players.each do |key, player|
-      if player.is_dead?
-        @board.remove_player(player)
-      end
+    @turn_mutex.synchronize do
+      @players.each do |key, player|
+        if player.is_dead?
+          @board.remove_player(player)
+        end
 
-      player.unblock
+        player.unblock
+      end
     end
   end
 

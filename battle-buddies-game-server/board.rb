@@ -3,29 +3,14 @@ require './player'
 require './indestructible_object'
 
 class Board < BBObject
-  attr_reader :width, :height, :number_of_players, :positions
+  attr_reader :width, :height, :number_of_players
+  attr_accessor :players
 
   def initialize(width, height, number_of_players)
     super(:board)
     @width = width
     @height = height
     @number_of_players = number_of_players
-    @board = Array.new(width) {Array.new(height)}
-    @starting_positions = create_starting_positions
-    @positions = Hash.new
-  end
-
-  def create_starting_positions
-    starts = Array.new
-
-    if @number_of_players == 4
-      starts.push( {:x => 0, :y => 0} )
-      starts.push( {:x => @width - 1, :y => 0} )
-      starts.push( {:x => @width - 1, :y => @height - 1} )
-      starts.push( {:x => 0, :y => @height - 1} )
-    end
-
-    starts
   end
 
   def random_position
@@ -38,17 +23,16 @@ class Board < BBObject
   def put_in_starting_position(player)
     pos = random_position
 
-    while @board[pos[:x]][pos[:y]] != nil
+    while !is_accessible(pos[:x], pos[:y])
       pos = random_position
     end
 
-    @board[pos[:x]][pos[:y]] = player
+    # @board[pos[:x]][pos[:y]] = player
     player.pos = pos
-    @positions[player.id] = pos
   end
 
   def move(player, direction)
-    cur_pos = @positions[player.id]
+    cur_pos = player.pos
     cur_x = cur_pos[:x]
     cur_y = cur_pos[:y]
     new_x = cur_x
@@ -103,9 +87,8 @@ class Board < BBObject
     if new_pos == cur_pos
       event = Event.new(false, description, :move, direction)
     else
-      clear_tile_at(cur_x, cur_y)
+      # clear_tile_at(cur_x, cur_y)
       put_player_at(player, new_x, new_y)
-      @positions[player.id] = new_pos
       event = Event.new(true, description, :move, direction)
     end
 
@@ -113,11 +96,19 @@ class Board < BBObject
   end
 
   def get_at(x, y)
-    @board[x][y]
+    tile = nil
+
+    @players.each do |player|
+      if player.pos[:x] == x && player.pos[:y] == y
+        tile = player
+      end
+    end
+
+    tile
   end
 
   def get_object_relative_to_player(player, direction)
-    cur_pos = @positions[player.id]
+    cur_pos = player.pos
     cur_x = cur_pos[:x]
     cur_y = cur_pos[:y]
 
@@ -157,21 +148,29 @@ class Board < BBObject
   end
 
   def clear_tile_at(x, y)
-    @board[x][y] = nil
+    # @board[x][y] = nil
   end
 
   def put_player_at(player, x, y)
-    @board[x][y] = player
+    # @board[x][y] = player
     player.pos = {:x => x, :y => y}
   end
 
   def remove_player(player)
-    cur_pos = @positions[player.id]
+    cur_pos = player.pos
     clear_tile_at(cur_pos[:x], cur_pos[:y])
   end
 
   def is_accessible(x, y)
-    get_at(x, y) == nil
+    accessible = true
+
+    @players.each do |player|
+      if player.pos != nil && player.pos[:x] == x && player.pos[:y] == y
+        accessible = false
+      end
+    end
+
+    accessible
   end
 
   def is_occupied (x, y)
@@ -179,18 +178,20 @@ class Board < BBObject
   end
 
   def hash_board
-    h_board = Array.new()
+    h_board = Array.new(width) {Array.new(height)}
 
-    @board.each_with_index do |row, x|
-      h_row = Array.new()
-      row.each_with_index do |element, y|
-        if element.nil?
-          h_row.insert(y, nil)
-        else
-          h_row.insert(y, element.to_h_public)
-        end
-      end
-      h_board.insert(x, h_row)
+    @players.each do |player|
+      h_board[player.pos[:x]][player.pos[:y]] = player.to_h_public
+
+      # h_row = Array.new()
+      # row.each_with_index do |element, y|
+      #   if element.nil?
+      #     h_row.insert(y, nil)
+      #   else
+      #     h_row.insert(y, element.to_h_public)
+      #   end
+      # end
+      # h_board.insert(x, h_row)
     end
 
     h_board
