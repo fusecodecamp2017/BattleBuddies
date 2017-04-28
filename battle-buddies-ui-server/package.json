@@ -1,7 +1,7 @@
 {
-  "name": "code-camp-js",
+  "name": "battle-buddies-ui-server",
   "version": "0.0.0",
-  "description": "Small description for code-camp-js goes here",
+  "description": "Ember UI Portion of Battle Buddies - Fuse Code Camp 2017",
   "private": true,
   "directories": {
     "doc": "doc",
