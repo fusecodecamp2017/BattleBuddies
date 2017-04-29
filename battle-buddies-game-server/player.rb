@@ -7,7 +7,7 @@ class Player < DestructibleObject
 
   attr_accessor :id, :type, :dmg, :defence, :hp, :name, :pos
 
-  def initialize(name, dmg = 1, defence = 4, hp = 4)
+  def initialize(name, hp = 4, defence = 4, dmg = 1)
     super(:player, hp)
 
     @id=SecureRandom.uuid
@@ -118,8 +118,8 @@ class Player < DestructibleObject
       :public_id => @public_id,
       :name => @name,
       :hp => @hp,
-      :dmg => @dmg,
-      :defence => @defence,
+      :damage => @dmg,
+      :defense => @defence,
       :turns => @turns.map { |turn| turn.to_h }
     }
   end
@@ -128,7 +128,7 @@ class Player < DestructibleObject
     h = to_h_public
     adnl = {
       :id => @id,
-      :pos => @pos
+      :position => @pos
     }
 
     h.merge(adnl)

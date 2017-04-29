@@ -9,7 +9,18 @@ class Player {
     this.name = params.name;
     this.hp = params.hp;
     this.defense = params.defense;
+    this.damage = params.damage;
     this.position = params.position;
+  }
+
+  updatePlayer(params) {
+    this.hp = params.hp;
+    this.defense = params.defense;
+    this.position = params.position;
+  }
+
+  isDead() {
+    return this.hp <= 0;
   }
 }
 

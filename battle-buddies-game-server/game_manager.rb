@@ -131,7 +131,47 @@ class GameManager
 
   def add_player(params)
     name = params[:name]
-    player = Player.new(name)
+    hp = params[:hp].to_i
+    defense = params[:defense].to_i
+    damage = params[:damage].to_i
+
+    points = 9
+
+    if hp == nil || hp < 0
+      hp = 4
+    end
+
+    if defense == nil || defense < 0
+      defense = 4
+    end
+
+    if damage == nil || damage < 0
+      damage = 1
+    end
+
+    if hp > points
+      hp = points
+    end
+
+    points -= hp
+
+    if defense > points
+      defense = points
+    end
+
+    if points > 0
+      points -= defense
+    end
+
+    if damage > points
+      damage = points
+    end
+
+    if points > 0
+      points -= damage
+    end
+
+    player = Player.new(name, hp, defense, damage)
 
     if player
       @mutex.synchronize do

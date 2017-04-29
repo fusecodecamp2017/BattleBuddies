@@ -58,13 +58,24 @@ class RequestService {
 
 
   getHomepage() {
-    return this.sendGET('/').then(response => {
+    return this.sendGET('').then(response => {
       return response.message;
     });
   }
 
-  registerPlayer(name) {
-    return this.sendPOST('/player', { name: name });
+  registerPlayer(name, hp = 4, defense = 4, damage = 1) {
+    let params = { 
+      name: name,
+      hp:hp,
+      defense: defense,
+      damage: damage
+    };
+
+    return this.sendPOST('player', params);
+  }
+
+  makeTurn(turn) {
+    return this.sendPOST('game/turn', turn);
   }
 }
 

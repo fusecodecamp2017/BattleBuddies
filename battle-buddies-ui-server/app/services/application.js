@@ -10,7 +10,7 @@ let {
 
 export default Service.extend({
 
-  host: "http://localhost:8282/",
+  host: "http://192.168.1.91:8282/",
 
   getGameState(){
     return this.getJson("game");
